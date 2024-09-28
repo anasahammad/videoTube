@@ -1,0 +1,11 @@
+{
+  "name": "chai_aur-backend",
+  "version": "1.0.0",
+  "description": "this is a backend tutorial which i learning from hitsh chowdhory of chai aur yt channel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anas Ahammad Sarker",
+  "license": "ISC"
+}
