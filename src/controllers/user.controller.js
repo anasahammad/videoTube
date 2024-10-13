@@ -1,7 +1,7 @@
 import {asyncHandler} from "../utils/assyncHandler.js";
 import {ApiError} from "../utils/ApiError.js";
 import {User} from "../models/user.model.js";
-import {uploadOnCloudinary} from "../utils/cloudinary.js"
+import {deleteOnCloudinary, uploadOnCloudinary} from "../utils/cloudinary.js"
 import {ApiResponse} from "../utils/ApiRespones.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -137,8 +137,8 @@ const loginUser = asyncHandler(async (req, res)=>{
 
 const logoutUser = asyncHandler(async(req, res)=>{
     await User.findByIdAndUpdate(req.user._id, {
-        $set : {
-            refreshToken : undefined
+        $unset : {
+            refreshToken : 1
         }
         
     },
@@ -210,12 +210,13 @@ const changeCurrentPassword = asyncHandler(async(req, res)=>{
   user.password = newPassword
   await user.save({validateBeforeSave: false})
 
-  return res.status(200).json(new ApiRespones(200, {}, "Password changed successfully"))
+  return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"))
 
 })
 
 const getCurrentUser = asyncHandler(async(req, res)=>{
-  return res.status(200).json(new ApiRespones(200, req.user, "Current User fetched Successfully"))
+  return res.
+  status(200).json(new ApiResponse(200, req.user, "Current User fetched Successfully"))
 })
 
 const updateUserDetails = asyncHandler(async(req, res)=>{
@@ -239,6 +240,8 @@ const updateUserDetails = asyncHandler(async(req, res)=>{
 
 })
 
+
+
 const updateUserAvatar = asyncHandler(async(req, res)=>{
 
   const avatarLocalPath = req.file?.path
@@ -247,7 +250,15 @@ const updateUserAvatar = asyncHandler(async(req, res)=>{
 
   }
 
+
+
+    const deleteAvatar = await deleteOnCloudinary(req.user?.avatar)
+    
+   
+
   
+  
+
   const avatar = await uploadOnCloudinary(avatarLocalPath)
 
   if(!avatar.url){
